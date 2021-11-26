@@ -1,0 +1,39 @@
+{% extends 'layout.html' %}
+{% block title %}投稿検索{% endblock %}
+{% block content %}
+{% load bootstrap4 %}
+<div class="container bg-white mb-3">
+<h3 class="my-5 text-center py-3">検索フォーム</h3>
+  <div class="form-wrapper form-group d-flex border-bottom pb-3">
+    <form action="{% url 'search' %}" method="post" class="form-inline mr-4">
+      {% csrf_token %}
+      {{form}}
+      <input type="submit" class="btn btn-primary">
+    </form>
+    {% if results %}
+    <img src="data:image/png;base64,{{ chart | safe }}" class="col-6 ">
+    {% endif %}
+  </div>
+
+
+<div class="row row-col-3 mt-5">
+  {% for result in results %}
+  <div class="trip-container col-4 border p-3">
+    <div class="trip-title my-2">
+      <a href="{% url 'trip_detail' result.trip_id %}" class="text-body h5">{{result.trip__title}}</a>
+    </div>
+    <div class="d-flex mb-2">
+      <div class="username">投稿日{{result.created_at.date}}{{result.trip__created_at.date}}({{result.trip__prefecture}})</div>
+      <div class="username ml-auto">投稿者：<a href="{% url 'user_trips' result.trip__user__id %}" class="text-body">{{result.trip__user__username}}</a></div>
+    </div>
+    <div class="fish-image">
+    <a href="{{result.image_url}}"><img src="{{result.image_url}}" width=100% height="auto" alt="" class="d-block mx-auto"></a>
+    </div>
+  </div>
+  {% endfor %}
+</div>
+
+</div>
+{% endblock %}
+
+

@@ -1,0 +1,113 @@
+{% load static %}
+{% load bootstrap4 %}
+{% load static %}
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+  <meta charset="UTF-8">
+  <title>{% block title %}投稿編集{% endblock %}</title>
+  <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.0.0-beta1/dist/css/
+    bootstrap.min.css" rel="stylesheet" integrity="sha384-giJF6kkoqNQ00vy+HMDP7azOuL0xtbfIcaT9wjKHr8RbDVddVHyTfAAsrekwKmP1" 
+    crossorigin="anonymous">
+  <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/css/bootstrap.min.css" crossorigin="anonymous">
+  <meta http-equiv="X-UA-Compatible" content="IE=edge">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+</head>
+
+<body class="bg-light">
+  <header>
+    <nav class="navbar navbar-expand-lg navbar-light bg-primary">
+      <h3 class="text-white pl-5 pr-3">FishApp</h1>
+      <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarNavAltMarkup" aria-controls="navbarNavAltMarkup" aria-expanded="false" aria-label="Toggle navigation">
+        <span class="navbar-toggler-icon"></span>
+      </button>
+      <div class="collapse navbar-collapse" id="navbarNavAltMarkup">
+        <div class="navbar-nav">
+          <a class="nav-item nav-link text-light" href="{% url 'index' %}">トップ </a>
+          <a class="nav-item nav-link text-light" href="{% url 'search' %}">投稿検索</a>
+          {% if not user.is_authenticated %}
+          <a class="nav-item nav-link text-light" href="{% url 'login' %}">ログイン</a>
+          <a class="nav-item nav-link text-light" href="{% url 'signup' %}">ユーザー登録</a>
+          {% endif %}
+          {% if user.is_authenticated %}
+          <a class="nav-item nav-link text-light text-right" href="{% url 'create' %}">新規投稿</a>
+          <a class="nav-item nav-link text-light text-right" href="{% url 'user_trips' user.id %}">マイページ</a>
+          <a class="nav-item nav-link text-light text-right" href="{% url 'logout' %}">ログアウト</a>
+          {% endif %}
+
+        </div>
+      </div>
+    </nav>
+  </header>
+
+  <div class="container bg-white pb-3 mb-3">
+    <h3 class="text-center py-3 my-5">投稿編集</h1>
+    <div class="form-wrapper d-grid col-6 mx-auto gap-2 ">
+      <form id="form-container" action="{% url 'update' pk %}" method="post" enctype="multipart/form-data">
+        {% csrf_token %}
+        <div class="tripform">
+          {% bootstrap_form trip_form %}
+        </div>
+        <div class="boundery border-bottom border-top text-center mb-2">釣果</div>
+          <div class="past-results mb-3">
+            {% for result in results %}
+            {{result.fish_name}}
+            {% if result.image %}
+            <img src="{{ result.image.url}}" width=100 hight=100 alt="NoImage" >
+            {% endif %}
+            削除：<input type="checkbox" name="delete" value="{{result.id}}">
+            {% endfor %}
+          </div>
+          {{ formset.management_form }}
+          {% for form in formset %}
+          <div class="result-form border p-3 mb-3 border-primary">
+          {% bootstrap_form form %}
+          {% endfor %}
+          </div>
+          <button type="button" id="add-form" class="btn btn-primary mt-2">Add</button>
+          <button type="button" id="delete-form" class="btn btn-danger mt-2">Delete</button>
+        <input type="submit" class="btn btn-block btn-success mt-3 mb-3">
+      </form>
+    </div>
+  </div>
+
+  <script>
+
+let resultForm = document.querySelectorAll(".result-form")
+let container = document.querySelector("#form-container")
+let addButton = document.querySelector("#add-form")
+let totalForms = document.querySelector("#id_result_set-TOTAL_FORMS")
+let deleteButton = document.querySelector("#delete-form")
+
+let formNum = resultForm.length-1
+addButton.addEventListener('click',addForm)
+deleteButton.addEventListener('click',deleteForm)
+console.log('hello')
+function addForm(e){
+  e.preventDefault()
+  console.log('hello')
+  let newForm = resultForm[0].cloneNode(true)
+  let formRegex = RegExp(`set-(\\d){1}-`,'g')
+
+  formNum++
+  newForm.innerHTML = newForm.innerHTML.replace(formRegex,`set-${formNum}-`)
+  container.insertBefore(newForm,addButton)
+
+  totalForms.setAttribute('value',`${formNum+1}`)
+}
+
+function deleteForm(e){
+  e.preventDefault()
+  let resultForm = document.querySelectorAll(".result-form")
+  let formNum = resultForm.length-1
+  let newestForm = resultForm[formNum]
+  newestForm.remove()
+  totalForms.setAttribute('value',`${formNum+1}`)
+} 
+
+  </script>
+
+  
+  
+</body>
+</html>

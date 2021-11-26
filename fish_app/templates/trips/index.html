@@ -1,0 +1,71 @@
+{% extends 'layout.html' %}
+{% load bootstrap4 %}
+{% block title %}トップ{% endblock %}
+
+{% block content %}
+<div class="container bg-white mb-3">
+<div class="row row-col-2 mt-5">
+  {% for trip in page_obj %}
+  <div class="trip-container col-6 border p-3">
+    <div class="trip-title"><a href="/trips/{{trip.id}}" class="text-body h5">{{trip.title}}</a></div>
+    <div class="d-flex mt-2">
+      <div class="username">投稿日{{trip.created_at.date}}({{trip.prefecture}})</div>
+      <div class="username ml-auto">投稿者：<a href="{% url 'user_trips' trip.user_id %}" class="text-body">{{trip.user.username}}</a></div>
+    </div>
+    <div class="fish-result my-2">釣果：
+      {% for result in trip.result_set.all %}
+       {{result.fish_name}}
+      {% endfor %}
+    </div>
+    <div class="content-container my-2">
+      {{trip.content | truncatechars:65}}
+    </div>
+    <div class="image-container">
+      {% if trip.result_set.first.image %}
+      <a href="{{trip.result_set.first.image.url}}"><img src="{{trip.result_set.first.image.url}}" alt="" width=80% height=auto class="d-flex mx-auto"></a>
+      {% endif %}
+    </div>
+  </div>
+  {% endfor %}
+</div>
+
+
+
+
+
+<nav aria-label="Page navigation" class="pb-3">
+
+  <ul class="pagination justify-content-center pagination-lg g-mt-28 g-mb-28 mt-5">
+      <!-- 前へ の部分 -->
+      {% if page_obj.has_previous %}
+          <li class="page-item">
+              <a class="page-link" href="?page={{ page_obj.previous_page_number }}">
+                  <span aria-hidden="true">&laquo;</span>
+              </a>
+          </li>
+      {% endif %}
+
+      <!-- 数字の部分 -->
+      {% for num in page_obj.paginator.page_range %}
+          {% if num <= page_obj.number|add:5 and num >= page_obj.number|add:-5 %}
+
+              {% if page_obj.number == num %}
+                  <li class="page-item active"><a class="page-link" href="#">{{ num }}</a></li>
+              {% else %}
+                  <li class="page-item"><a class="page-link" href="?page={{ num }}">{{ num }}</a></li>
+              {% endif %}
+          {% endif %}
+      {% endfor %}
+
+      <!-- 次へ の部分 -->
+      {% if page_obj.has_next %}
+          <li class="page-item">
+              <a class="page-link" href="?page={{ page_obj.next_page_number }}">
+                  <span aria-hidden="true">&raquo;</span>
+              </a>
+          </li>
+      {% endif %}
+  </ul>
+</nav>
+</div>
+{% endblock %}

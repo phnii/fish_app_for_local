@@ -1,0 +1,15 @@
+{% extends 'layout.html' %}
+{% load bootstrap4 %}
+{% block title %}ログイン{% endblock %}
+
+{% block content %}
+<div class="container bg-white">
+  <div class="d-grid col-6 mx-auto gap-2 mt-5 pt-3 pb-5">
+    <form action="{% url 'login' %}" method='post'>
+      {% csrf_token %}
+      {% bootstrap_form form %}
+      <input type="submit" class="btn btn-block btn-success">
+      </div>
+    </form>
+</div>
+{% endblock %}

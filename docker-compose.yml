@@ -1,0 +1,37 @@
+version: "3"
+
+services:
+  db:
+    image: postgres
+    volumes:
+      - ./volumes/data/db:/var/lib/postgresql/data
+    environment:
+      - POSTGRES_DB=postgres
+      - POSTGRES_USER=postgres
+      - POSTGRES_PASSWORD=postgres
+    container_name: db_postgres
+  app:
+    build: ./fish_app/
+    volumes:
+      - tmp-data:/app/tmp
+      - ./volumes/data/image-data:/app/media/images
+    environment:
+      - POSTGRES_NAME=postgres
+      - POSTGRES_HOST=db_postgres
+      - POSTGRES_USER=postgres
+      - POSTGRES_PASSWORD=postgres
+      - POSTGRES_PORT=5432
+    depends_on:
+      - db
+  nginx:
+    build:
+      context: ./nginx/
+    volumes:
+      - tmp-data:/app/tmp
+      - ./volumes/data/image-data:/app/media/images
+    ports:
+      - "80:80"
+    depends_on:
+      - app
+volumes:
+  tmp-data:

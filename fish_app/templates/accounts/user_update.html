@@ -1,0 +1,16 @@
+{% extends 'layout.html' %}
+{% load static %}
+{% load bootstrap4 %}
+{% block title %}ユーザー編集{% endblock %}
+
+{% block content %}
+<div class="container bg-white mt-5">
+  <div class="d-grid col-6 mx-auto pt-5 pb-5">
+    <form action="{% url 'user_update' pk %}" method='post'>
+      {% csrf_token %}
+      {% bootstrap_form form %}
+      <input type="submit" class="btn btn-block btn-success ">
+    </form>
+  </div>
+</div>
+{% endblock %}

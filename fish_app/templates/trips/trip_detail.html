@@ -1,0 +1,88 @@
+{% extends 'layout.html' %}
+{% block title %}投稿詳細{% endblock %}
+
+{% block content %}
+<div class="container bg-white">
+  <div class="trip-container col-12 mx-auto gap-2 d-grid py-3 my-5">
+    <h2 class="text-center mt-3">{{trip.title}}</h2>
+    <div class="username text-right">投稿日：{{trip.created_at.date}}</div>
+    <div class="username text-right">投稿者：<a href="{% url 'user_trips' trip.user_id %}" class="text-body">{{trip.user.username}}</a></div>
+    <div class="content-container d-flex mr-5">
+      <div class="content-name m-2 col-1">
+        内容
+      </div>
+      <div class="content mt-2 ml-3 mr-3 mb-2 col-11">
+        {{trip.content | linebreaksbr}}
+      </div>
+    </div>
+
+    <div class="content-container d-flex">
+      <div class="content-name m-2 col-1">
+        場所
+      </div>
+      <div class="content mt-2 ml-3 mb-2 col-11">
+        {{trip.prefecture }}
+      </div>
+    </div>
+    
+    <div class="fish-container d-flex">
+      <div class="fish-names m-2 col-1">釣果</div>
+      <div class="fish-list mt-2 ml-3 mb-2 col-11">
+        <div class="fish-name mb-3">
+          {% for result in trip.result_set.all %}
+          {{result.fish_name}}  
+          {% endfor %}
+        </div>
+        <div class="fish-image">
+          {% for result in trip.result_set.all %}
+          {% if result.image %}
+          <a href="{{result.image.url}}"><img src="{{result.image.url}}" width="300" height="300" class="mr-2"></a>
+          {% endif %}
+          {% endfor %}
+        </div>
+      </div>
+    </div>
+    {% if user.is_authenticated and user.id == trip.user.id %}
+    <div class="text-right">
+      <a href="{% url 'update' trip.id %}"><button class="btn btn-success btn-sm">編集</button></a>
+      <a href="{% url 'delete' trip.id %}"><button class="btn btn-danger btn-sm">削除</button></a>
+    </div>
+
+    {% endif %}
+  </div>
+</div>
+
+<div class="container bg-white mb-3 pb-3">
+    <div class="comment-container container col-8 border-bottom">
+      <p class="pt-3">コメント</p>
+      {% for comment in trip.comment_set.all %}
+      <div class="comment border-top">
+        <div class="comment-header d-flex">
+          <a href="{% url 'user_trips' comment.user.id %}" class="text-body">{{comment.user.username}}</a>
+          <p class="ml-auto">{{comment.created_at.date}}</p>
+        </div>
+        <div class="comment-body">
+          {{comment.content | linebreaksbr}}
+        </div>
+        {% if user.is_authenticated and user == comment.user %}
+        <form action="{% url 'comment_delete' comment.id %}" method="post" class="text-right">
+          {% csrf_token %}
+          <input type="submit" value="削除" class="btn btn-danger btn-sm mb-1">
+        </form>
+        {% endif %}
+      </div>
+      {% endfor %}
+    </div>
+    {% if user.is_authenticated %}
+    <form method="post" action="{% url 'trip_detail' trip.pk %}" class=" p-3">
+      {% csrf_token %}
+      {{form.content }}
+      {{form.user.as_hidden}}
+      {{form.trip.as_hidden}}
+      <input type="submit" value="送信" class="btn btn-primary btn-block col-8 mt-3 mx-auto">
+    </form>
+    {% endif %}
+</div>
+
+
+{% endblock %}
