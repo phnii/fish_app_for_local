@@ -124,7 +124,7 @@ def search(request):
             for result in results:
                 result['image_url'] = f"/media/{result['image']}"
         result_list = list(results.values_list('created_at__month',flat=True))
-        x = [1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12]
+        x = list(range(1,13))
         y = []
         for i in range(1,13):
             y.append(result_list.count(i))
