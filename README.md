@@ -13,7 +13,7 @@ docker-compose.ymlファイルがあるディレクトリの中で次のコマ�
 docker-compose up --build -d
 ```
 djangoのマイグレーションファイルの作成。  
-DBの初期化に時間がかかってDBの接続に失敗することがあります。
+DBの初期化に時間がかかってDBの接続に失敗することがあります。  
 その場合5~10秒ほど時間を置いてから再度下記のコマンドを実行してください。
 ```
 docker-compose exec app python manage.py makemigrations
