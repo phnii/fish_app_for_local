@@ -37,3 +37,20 @@ class CustomUser(AbstractUser):
     REQUIRED_FIELDS = []
 
     objects = CustomUserManager()
+
+class Connection(models.Model):
+    follower = models.ForeignKey(CustomUser, related_name='follower', on_delete=models.CASCADE)
+    followed = models.ForeignKey(CustomUser, related_name='followed', on_delete=models.CASCADE)
+    created_at = models.DateTimeField(auto_now_add=True)
+
+    def __str__(self):
+        return '{} : {}'.format(self.follower.username, self.followed.username)
+
+class Room(models.Model):
+    users = models.ManyToManyField(CustomUser)
+
+class Message(models.Model):
+    sender = models.ForeignKey(CustomUser, related_name='sender', on_delete=models.CASCADE)
+    content = models.TextField(max_length=600)
+    room = models.ForeignKey(Room, related_name='room', on_delete=models.CASCADE)
+    created_at = models.DateTimeField(auto_now_add=True)

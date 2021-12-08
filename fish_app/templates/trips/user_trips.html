@@ -3,11 +3,13 @@
 {% block title %}ユーザー履歴{% endblock %}
 {% block content %}
 <div class="container bg-white mb-3">
-  <h3 class="text-center mt-5 pt-3">投稿履歴</h1>
+  <h3 class="text-center mt-5 pt-3">{{account.username}}さんの投稿履歴</h1>
   <div class="wrapper d-flex">
     <div class="user-info col-4 mt-5 mr-3">
     <p>ユーザー名：{{account.username}}</p>
     <p>投稿数：{{ account.trip_set.all.count }}</p>
+    <p><a class="text-info" href="{% url 'follow_list' account.id %}">>>フォローリスト</a></p>
+    <p>自己紹介</p>
     <div class="intro-content mb-3 border-top border-bottom py-2">
       {{account.introduce| linebreaksbr}}
     </div>

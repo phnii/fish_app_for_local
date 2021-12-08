@@ -1,7 +1,6 @@
 from django.contrib.auth.forms import UserCreationForm
-# from django.forms import widgets
-
-from .models import CustomUser
+from django import forms
+from .models import CustomUser, Message
 
 class SignupForm(UserCreationForm):
     def __init__(self, *args, **kwargs):
@@ -13,3 +12,12 @@ class SignupForm(UserCreationForm):
     class Meta(UserCreationForm.Meta):
         model = CustomUser
         fields = ('username','email')
+
+
+class MessageForm(forms.ModelForm):
+    class Meta:
+        model = Message
+        fields = ['content']
+        labels = {'content': 'メッセージ'}
+        widgets = {'content': forms.Textarea(attrs={'rows':3})}
+        error_messages = {'content':{'required':'必須です', 'mex_length':'600字以下にしてください'}}

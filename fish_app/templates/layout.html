@@ -28,9 +28,11 @@
           <a class="nav-item nav-link text-light" href="{% url 'signup' %}">ユーザー登録</a>
           {% endif %}
           {% if user.is_authenticated %}
-          <a class="nav-item nav-link text-light text-right" href="{% url 'create' %}">新規投稿</a>
-          <a class="nav-item nav-link text-light text-right" href="{% url 'user_trips' user.id %}">マイページ</a>
-          <a class="nav-item nav-link text-light text-right" href="{% url 'logout' %}">ログアウト</a>
+          <a class="nav-item nav-link text-light" href="{% url 'create' %}">新規投稿</a>
+          <a class="nav-item nav-link text-light" href="{% url 'user_trips' user.id %}">投稿履歴</a>
+          <a class="nav-item nav-link text-light text-right" href="{% url 'follow_list' user.id %}">フォローリスト</a>
+          <a class="nav-item nav-link text-light" href="{% url 'logout' %}">ログアウト</a>
+          <a class="nav-item nav-link text-light border" href="{% url 'user_trips' user.id %}">{{user.username}} でログイン中</a>
           {% endif %}
         </div>
       </div>

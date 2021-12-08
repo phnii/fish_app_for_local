@@ -1,0 +1,42 @@
+{% extends 'layout.html' %}
+{% load static %}
+{% load bootstrap4 %}
+{% block title %}DM{% endblock %}
+{% block content %}
+mutural_follow{{mutural_follow}}
+connection_exist{{connection_exist}}
+reverse_connection{{reverse_connection_exist}}
+<div class="container bg-white mt-5">
+  <div class="d-grid col-8 mx-auto pt-5 pb-5">
+    <h3>
+    {% for user in object.users.all %}
+      <a class="text-body" href="{% url 'user_trips' user.id %}">{{user.username}}さん</a>
+    {% endfor %}
+    のメッセージ
+    </h3>
+
+    {% if mutural_follow %}
+      <form action="{% url 'message_create' pk %}" method="post">
+        {% csrf_token %}
+        {% bootstrap_form form %}
+        <input class="btn btn-block btn-primary" type="submit" value='送信'>
+      </form>
+    {% else %}
+      <p class="text-success">※ メッセージの送信は相互フォロー状態でのみ可能です</p>
+    {% endif %}
+    <div class="messages-container mt-5">
+      {% for message in messages %}
+      <div class="message border m-2 p-2 mb-3">
+        <div class="d-flex message-heade justify-content-between">
+          <div class="content">{{message.sender.username}}</div>
+          <div class="text">{{message.created_at}}</div>
+        </div>
+        <div class="message-content">
+          {{message.content | linebreaksbr }}
+        </div>
+      </div>
+      {% endfor %}
+    </div>
+  </div>
+</div>
+{% endblock %}

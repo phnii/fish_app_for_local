@@ -4,7 +4,7 @@ from django.utils.translation import gettext_lazy as _
 from django.contrib.auth import get_user_model
 from accounts.forms import SignupForm
 
-from .models import CustomUser
+from .models import Connection, CustomUser, Message, Room
 
 CustomUser = get_user_model()
 
@@ -14,4 +14,6 @@ class CustomUserAdmin(UserAdmin):
     list_display = ['email', 'username',]
 
 admin.site.register(CustomUser, CustomUserAdmin)
-
+admin.site.register(Connection)
+admin.site.register(Room)
+admin.site.register(Message)

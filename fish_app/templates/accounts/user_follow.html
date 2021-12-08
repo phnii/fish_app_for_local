@@ -1,0 +1,72 @@
+{% extends 'layout.html' %}
+{% load static %}
+{% load bootstrap4 %}
+{% block title %}フォローリスト{% endblock %}
+{% block content %}
+<div class="container bg-white mt-5 ">
+    <div class="col-6 mx-auto pt-5 pb-5 text-center">
+      <h3><a class="text-body" href="{% url 'user_trips' object.id %}">{{object.username}}さん</a>のフォローリスト</h3>
+        {% if user.is_authenticated %}
+          {% if not user.id == pk and not connection_exist %}
+            <form action="{% url 'follow' pk %}" method="post">
+              {% csrf_token %}
+              <input class="btn btn-sm btn-primary" type="submit" value='フォローする'　>
+            </form>
+          {% elif user.id != pk %}
+          <form action="{% url 'unfollow' pk %}" method="post">
+            {% csrf_token %}
+            <input class='btn btn-sm btn-danger' type="submit" value='フォローを外す' >
+          </form>
+          {% endif %}
+        {% endif %}
+        <div class="message-button mt-3">
+          {% if user.is_authenticated %}
+          {% if user.id != object.id %}
+            {% if mutural_follow or room_exist %}
+            <form action="{% url 'room_create' pk %}" method="post">
+              {% csrf_token %}
+              <input class='btn btn-sm btn-info' type="submit" value="メッセージ">
+            </form>
+            {% endif %}
+          {% endif %}
+          {% endif %}
+        </div>
+    </div>
+
+    <div class="d-flex">
+      <div class='col-6'>
+        <h5>以下のユーザーをフォローしています({{following_list.count}})</h5>
+        {% for following in following_list %}
+        <div class="follower border p-2 m-1">
+          <div>
+          <a class="text-body" href="{% url 'follow_list' following.followed.id %}">{{following.followed.username}}</a>
+          (投稿数 : {{following.followed.trip_set.count}})
+          <a class="text-secondary" href="{% url 'user_trips' following.followed.id　%}">投稿履歴</a>
+          <a class="text-secondary" href="{% url 'follow_list' following.followed.id %}">フォローリスト</a>
+          </div>
+          <div>
+            {{following.followed.introduce}}
+          </div>
+        </div>
+        {% endfor %}
+      </div>
+      <div class="col-6">
+      <h5>以下のユーザーによってフォローされています({{followed_by_list.count}})</h5>
+      {% for followed in followed_by_list %}
+      <div class="followed border p-2 m-1">
+        <div>
+          <a class="text-body" href="{% url 'follow_list' followed.follower.id %}">{{followed.follower.username}}</a>
+        (投稿数 : {{followed.follower.trip_set.count}})
+        <a class="text-secondary" href="{% url 'user_trips' followed.follower.id　%}">投稿履歴</a>
+        <a class="text-secondary" href="{% url 'follow_list' followed.follower.id %}">フォローリスト</a>
+        </div>
+        <div>
+          {{followed.follower.introduce}}
+        </div>
+      </div>
+      {% endfor %}
+      </div>
+    </div>
+  </div>
+</div>
+{% endblock %}
